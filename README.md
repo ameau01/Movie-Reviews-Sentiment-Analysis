@@ -2,14 +2,15 @@
 ## CSCA-5028 Software Architecture for Big Data Applications
 
 **CSCA-5028: Software Architecture for Big Data Applications**
+
 This project aims to convert user-submitted movie reviews into rating scores using sentiment analysis from a Natural Language Processor. Movie ratings and reviews can be sold to online movie platforms, such as Netflix, to provide movie recommendations.
 
 ---
-* 1. What problem is the product aimed at solving?
+1. What problem is the product aimed at solving?
 This product aims to address the challenges of generating accurate rating scores for movie review text.
-* 2. Who is the product geared towards (targeted audience)?
+2. Who is the product geared towards (targeted audience)?
 The primary target audience is **online movie platforms**, such as **Netflix** or **Amazon Prime**, to use these ratings in their recommender system.
-* 3. How is the product unique?
+3. How is the product unique?
 This product is unique in its application of **transfer learning**, where a pre-trained NLP model is **fine-tuned for the domain of movie reviews**.
 ---
 ## Project Components
