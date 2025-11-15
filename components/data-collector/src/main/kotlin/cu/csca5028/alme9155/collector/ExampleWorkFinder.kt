@@ -1,6 +1,6 @@
-package io.initialcapacity.collector
+package cu.csca5028.alme9155.collector
 
-import io.initialcapacity.workflow.WorkFinder
+import cu.csca5028.alme9155.workflow.WorkFinder
 import org.slf4j.LoggerFactory
 
 class ExampleWorkFinder : WorkFinder<ExampleTask> {

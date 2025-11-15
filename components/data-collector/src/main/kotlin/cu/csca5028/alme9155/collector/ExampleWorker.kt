@@ -1,6 +1,6 @@
-package io.initialcapacity.collector
+package cu.csca5028.alme9155.collector
 
-import io.initialcapacity.workflow.Worker
+import cu.csca5028.alme9155.workflow.Worker
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 
