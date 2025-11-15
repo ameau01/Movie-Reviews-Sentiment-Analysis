@@ -1,10 +1,11 @@
-<#import "template.ftl" as layout>
-<@t.noauthentication title="Submit Review">
-    <div class="container">
-        <h2>Submit a Movie Review</h2>
-        <form method="post" action="/analyze">
-            <textarea name="text" placeholder="Enter your review..." required></textarea>
-            <button type="submit">Analyze Sentiment</button>
-        </form>
-    </div>
-</@layout.noauthentication>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AI-Powered Movie Sentiment Rating System</title>
+</head>
+<body>
+    <h1>AI-Powered Movie Sentiment Rating System</h1>
+    <p>Ktor 3 frontend is running.</p>
+</body>
+</html>
