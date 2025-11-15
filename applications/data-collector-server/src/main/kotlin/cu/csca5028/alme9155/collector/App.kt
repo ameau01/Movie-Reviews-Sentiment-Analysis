@@ -12,8 +12,32 @@ import java.util.TimeZone
 
 fun Application.collectorModule() {
     routing {
+        /*
         get("/") {
             call.respondText("Data Collector API", ContentType.Text.Plain)
+        }
+        */
+        get("/") {
+            val usage = """
+                AI-Powered Movie Sentiment Rating System
+                ------------------------------------------
+                Data Collector API
+                
+                Usage:
+                - POST /collect
+                    * Content-Type: application/json
+                    * Body: { "URL": "URL to file download" }
+                    
+                Example (curl):
+                curl -X POST http://localhost:8080/collect \
+                    -H "Content-Type: application/json" \
+                    -d '{"URL": "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"}' 
+                    
+                
+
+            """.trimIndent()
+
+            call.respondText(usage, ContentType.Text.Plain)
         }
         get("/health") {
             call.respondText("OK", ContentType.Text.Plain)

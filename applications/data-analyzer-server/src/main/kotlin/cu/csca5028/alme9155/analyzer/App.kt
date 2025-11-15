@@ -13,7 +13,26 @@ import java.util.TimeZone
 fun Application.analyzerModule() {
     routing {
         get("/") {
-            call.respondText("Sentiment Analyzer API", ContentType.Text.Plain)
+            val usage = """
+                AI-Powered Movie Sentiment Rating System
+                ------------------------------------------
+                Data Analyzer API
+                
+                Usage:
+                - POST /analyze
+                    * Content-Type: application/json
+                    * Body: { "text": "your movie review here" }
+                    
+                Example (curl):
+                curl -X POST http://localhost:8080/analyze \
+                    -H "Content-Type: application/json" \
+                    -d '{"text": "I loved this movie!"}' 
+                    
+                
+
+            """.trimIndent()
+
+            call.respondText(usage, ContentType.Text.Plain)
         }
         get("/health") {
             call.respondText("OK", ContentType.Text.Plain)

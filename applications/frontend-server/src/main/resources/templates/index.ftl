@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>AI-Powered Movie Sentiment Rating System</title>
-</head>
-<body>
-    <h1>AI-Powered Movie Sentiment Rating System</h1>
-    <p>Ktor 3 frontend is running.</p>
-</body>
-</html>
+<#import "template.ftl" as t>
+
+<@t.noauthentication title="Submit Review">
+    <div class="container">
+        <h2>Submit a Movie Review</h2>
+        <form method="post" action="/analyze" method="post">
+            <textarea name="text" placeholder="Enter your review..." required></textarea>
+            <button type="submit">Analyze Sentiment</button>
+        </form>
+    </div>
+</@t.noauthentication>

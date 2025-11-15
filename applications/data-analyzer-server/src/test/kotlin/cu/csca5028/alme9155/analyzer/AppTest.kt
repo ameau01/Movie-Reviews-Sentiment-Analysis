@@ -16,7 +16,7 @@ class AppTest {
 
         val response = client.get("/")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertContains(response.bodyAsText(), "Sentiment Analyzer")
+        assertContains(response.bodyAsText(), "Data Analyzer")
     }
 }
 
