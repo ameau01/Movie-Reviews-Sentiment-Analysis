@@ -1,20 +1,37 @@
+version = "1.0.0"
+
 plugins {
-    kotlin("jvm") version "1.9.22"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22" apply false
+    kotlin("jvm") version "2.0.20"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20" apply false
+}
+
+allprojects {
+    group = "cu.csca5028.alme9155"
+    repositories {
+        mavenCentral() 
+    }
 }
 
 subprojects {
-    if (listOf("applications", "components", "support").contains(name)) return@subprojects
-
     apply(plugin = "kotlin")
 
-    repositories {
-        mavenCentral()
-    }
+    val ktorVersion: String by project
 
     dependencies {
-        implementation("org.slf4j:slf4j-api:2.0.7")
+        implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+        implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+        implementation("io.ktor:ktor-server-freemarker-jvm:$ktorVersion")
+        implementation("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
+        
+        testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
+        testImplementation("org.jetbrains.kotlin:kotlin-test")
+    }
 
-        testImplementation(kotlin("test-junit"))
+    kotlin {
+        jvmToolchain(21)
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
     }
 }

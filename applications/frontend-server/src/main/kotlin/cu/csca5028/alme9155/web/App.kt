@@ -1,4 +1,4 @@
-package io.initialcapacity.web
+package cu.csca5028.alme9155.web
 
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.server.application.Application

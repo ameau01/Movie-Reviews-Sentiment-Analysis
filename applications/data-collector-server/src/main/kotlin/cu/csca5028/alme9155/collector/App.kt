@@ -1,4 +1,4 @@
-package io.initialcapacity.analyzer
+package cu.csca5028.alme9155.collector
 
 import io.initialcapacity.workflow.WorkScheduler
 import io.ktor.http.ContentType
@@ -17,6 +17,9 @@ fun Application.module() {
         get("/") {
             call.respondText("hi!", ContentType.Text.Html)
         }
+        get("/health") {
+            call.respondText("OK", ContentType.Text.Plain)
+        }
     }
     val scheduler = WorkScheduler<ExampleTask>(ExampleWorkFinder(), mutableListOf(ExampleWorker()), 30)
     scheduler.start()
@@ -24,6 +27,6 @@ fun Application.module() {
 
 fun main() {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-    val port = System.getenv("PORT")?.toInt() ?: 8887
+    val port = System.getenv("PORT")?.toInt() ?: 8886
     embeddedServer(Netty, port = port, host = "0.0.0.0", module = { module() }).start(wait = true)
 }

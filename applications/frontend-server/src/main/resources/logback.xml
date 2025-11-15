@@ -1,5 +1,5 @@
 <configuration>
-    <appender name="basic" class="io.initialcapacity.logging.BasicJSONServiceProvider"/>
+    <appender name="basic" class="cu.csca5028.alme9155.logging.BasicJSONServiceProvider"/>
     <root level="info">
         <appender-ref ref="basic"/>
     </root>

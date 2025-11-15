@@ -1,8 +1,8 @@
 plugins {
-    id("org.jetbrains.kotlin.plugin.serialization")
+    application
 }
 
-group = "io.initialcapacity.web"
+group = "cu.csca5028.alme9155.web"
 
 val ktorVersion: String by project
 
@@ -16,20 +16,4 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
-}
-
-task<JavaExec>("run") {
-    classpath = files(tasks.jar)
-}
-
-tasks {
-    jar {
-        manifest { attributes("Main-Class" to "io.initialcapacity.web.AppKt") }
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        from({
-            configurations.runtimeClasspath.get()
-                .filter { it.name.endsWith("jar") }
-                .map(::zipTree)
-        })
-    }
 }
