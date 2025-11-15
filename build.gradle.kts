@@ -29,7 +29,7 @@ subprojects {
         implementation("io.ktor:ktor-server-freemarker-jvm:$ktorVersion")
         implementation("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
 
-        testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
+        testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
         testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 

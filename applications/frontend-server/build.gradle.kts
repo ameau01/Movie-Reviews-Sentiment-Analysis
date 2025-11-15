@@ -15,5 +15,5 @@ dependencies {
     implementation("io.ktor:ktor-server-freemarker-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
 }
