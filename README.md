@@ -22,6 +22,18 @@ This project aims to convert user-submitted movie reviews into rating scores usi
 4. **Data Persistence**  
    A **NoSQL Document store** will be used within the entire system. It will store the ingested dataset collected from **Kaggle**, as well as all the sentiment analysis results for reporting purposes.
 ---
+## Dataset used for AI Model Training
+### Data Source 
+* Stanford Sentiment Treebank Class 5(SST-5):
+  * SST-5 is a fine-grained sentiment analysis dataset derived from Rotten Tomatoes movie review snipplets created by Stanford NLP Laboratory.
+  * This is a fine-grained sentiment analysis dataset because the sentiment labels are broken down to 5 rating categories. Most of the sentiment dataset only has classification between 0 and 1 (positive/negative).
+  * Rating categories range from 0-5: very negative, negative, neutral, positive, or very positive.
+
+### Data Size and Dimension ####
+* The dataset is organized into 3 splits: Train, Validation, Test.
+* *Train* split has 8544 sentence samples. Each sample contains "text", "label" and "label_text".
+* For example, "this is great movie", 4, "very positive"
+
 ## Product Environment
 **Google Cloud**### Technology stack
 
