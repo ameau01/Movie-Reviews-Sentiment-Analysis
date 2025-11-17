@@ -1,36 +1,22 @@
 package cu.csca5028.alme9155.logging
 
-import org.slf4j.ILoggerFactory
-import org.slf4j.IMarkerFactory
-import org.slf4j.helpers.BasicMarkerFactory
-import org.slf4j.helpers.NOPMDCAdapter
-import org.slf4j.spi.MDCAdapter
-import org.slf4j.spi.SLF4JServiceProvider
+import java.util.ServiceLoader
 
-
-class BasicJSONServiceProvider : SLF4JServiceProvider {
-    var REQUESTED_API_VERSION: String = "2.0.99"
-
-    private var loggerFactory = BasicJSONLoggerFactory()
-    private var markerFactory = BasicMarkerFactory()
-    private var mdcAdapter = NOPMDCAdapter()
-
-    override fun getLoggerFactory(): ILoggerFactory {
-        return loggerFactory
-    }
-
-    override fun getMarkerFactory(): IMarkerFactory {
-        return markerFactory
-    }
-
-    override fun getMDCAdapter(): MDCAdapter {
-        return mdcAdapter
-    }
-
-    override fun getRequestedApiVersion(): String {
-        return REQUESTED_API_VERSION
-    }
-
-    override fun initialize() {
-    }
+/**
+ * Service provider implementation for Java's ServiceLoader.
+ */
+class BasicJSONServiceProvider : LoggerFactory {
+    override fun getLogger(name: String): BasicJSONLogger = BasicJSONLoggerFactory.getLogger(name)
 }
+
+/**
+ * Interface for logger factories (extendable for other implementations).
+ */
+interface LoggerFactory {
+    fun getLogger(name: String): BasicJSONLogger
+}
+
+/**
+ * Convenience extension for ServiceLoader.
+ */
+fun loadLoggerFactories(): List<LoggerFactory> = ServiceLoader.load(LoggerFactory::class.java).toList()

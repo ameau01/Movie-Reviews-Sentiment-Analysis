@@ -1,6 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="basic" class="cu.csca5028.alme9155.logging.BasicJSONServiceProvider"/>
-    <root level="info">
-        <appender-ref ref="basic"/>
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>thread</includeMdcKeyName>
+            <customFields>{"app":"data-analyzer-server","version":"1.0.0"}</customFields>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="JSON_CONSOLE"/>
     </root>
+
+    <logger name="cu.csca5028.alme9155" level="DEBUG"/>
 </configuration>

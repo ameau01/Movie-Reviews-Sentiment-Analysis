@@ -16,10 +16,10 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.util.pipeline.PipelineContext
-import org.slf4j.LoggerFactory
 import java.util.TimeZone
+import cu.csca5028.alme9155.logging.BasicJSONLoggerFactory  
 
-private val logger = LoggerFactory.getLogger(object {}.javaClass.enclosingClass)
+private val logger = BasicJSONLoggerFactory.getLogger("FrontendServer")
 
 fun Application.frontendModule() {
     logger.info("starting the app")
@@ -52,9 +52,10 @@ private fun ApplicationCall.headersMap(): Map<String, String> =
 fun main() {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
     val port = System.getenv("PORT")?.toInt() ?: 8080
-    embeddedServer(
-        factory = Netty,
-        port = port, 
-        module = Application::frontendModule
-    ).start(wait = true)    
+    val logger = BasicJSONLoggerFactory.getLogger("FrontendServer")
+
+    logger.info("Starting Frontend Server on port $port")
+    embeddedServer(Netty, port = port, host = "0.0.0.0") {
+        frontendModule()
+    }.start(wait = true)
 }

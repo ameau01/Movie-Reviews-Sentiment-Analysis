@@ -3,109 +3,57 @@ package cu.csca5028.alme9155.logging
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.slf4j.Marker
-import org.slf4j.event.Level
-import org.slf4j.helpers.LegacyAbstractLogger
-import org.slf4j.helpers.MessageFormatter
-import org.slf4j.spi.LocationAwareLogger
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+/**
+ * Thread-safe JSON logger for server components.
+ */
+class BasicJSONLogger(private val name: String) {
+    private val json = Json { prettyPrint = false; ignoreUnknownKeys = true }
+    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(ZoneId.of("UTC"))
 
-class BasicJSONLogger(val desiredName: String) : LegacyAbstractLogger() {
-    init {
-        this.name = desiredName
-    }
+    fun debug(msg: String) = log("DEBUG", msg)
 
-    override fun isTraceEnabled(): Boolean {
-        return isLevelEnabled(LocationAwareLogger.TRACE_INT);
-    }
+    fun info(msg: String) = log("INFO", msg)
 
-    override fun isDebugEnabled(): Boolean {
-        return isLevelEnabled(LocationAwareLogger.DEBUG_INT);
-    }
+    fun warn(msg: String) = log("WARN", msg)
 
-    override fun isInfoEnabled(): Boolean {
-        return isLevelEnabled(LocationAwareLogger.INFO_INT);
-    }
+    fun error(msg: String, throwable: Throwable? = null) = log("ERROR", msg, throwable)
 
-    override fun isWarnEnabled(): Boolean {
-        return isLevelEnabled(LocationAwareLogger.WARN_INT);
-    }
-
-    override fun isErrorEnabled(): Boolean {
-        return isLevelEnabled(LocationAwareLogger.ERROR_INT);
-    }
-
-    override fun getFullyQualifiedCallerName(): String? {
-        return null
-    }
-
-    @Serializable
-    data class Entry(
-        val time: String,
-        val threadName: String,
-        val severity: String,
-        val loggerName: String,
-        val message: String
-    )
-
-    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
-
-    @Synchronized
-    override fun handleNormalizedLoggingCall(
-        level: Level?,
-        marker: Marker?,
-        messagePattern: String?,
-        arguments: Array<out Any>?,
-        throwable: Throwable?
-    ) {
-
-        val time = Instant.now().atZone(ZoneId.of("UTC")).format(formatter)
-        val threadName = Thread.currentThread().name
-        val severity = renderLevel(level!!.toInt())
-        val loggerName = name
-        val message = MessageFormatter.basicArrayFormat(messagePattern, arguments)
-
-        // %r [%t] %level %logger - %m%n
-        // val builder = StringBuilder(32)
-        // builder.append(time);
-        // builder.append(" ")
-        // builder.append("[")
-        // builder.append(threadName)
-        // builder.append("] ")
-        // builder.append(levelString)
-        // builder.append(" ")
-        // builder.append(loggetName).append(" - ");
-        // builder.append(message);
-        // val entry = builder.toString()
-
-        val entry = Entry(time, threadName, severity, loggerName, message)
-        val encodeToString = Json.encodeToString(entry)
-
-        System.err.println(encodeToString)
-        throwable?.printStackTrace()
-        System.err.flush()
-    }
-
-    private fun isLevelEnabled(level: Int): Boolean {
-        return (level >= LocationAwareLogger.INFO_INT)
-    }
-
-    private fun renderLevel(level: Int): String {
-        when (level) {
-            LocationAwareLogger.TRACE_INT -> return "TRACE"
-            LocationAwareLogger.DEBUG_INT -> return "DEBUG"
-            LocationAwareLogger.INFO_INT -> return "INFO"
-            LocationAwareLogger.WARN_INT -> return "WARN"
-            LocationAwareLogger.ERROR_INT -> return "ERROR"
+    private fun log(level: String, msg: String, throwable: Throwable? = null) {
+        val timestamp = formatter.format(Instant.now())
+        val threadId = Thread.currentThread().id
+        val logEntry = LogEntry(
+            timestamp = timestamp,
+            level = level,
+            logger = name,
+            thread = threadId,
+            message = msg,
+            exception = throwable?.let { serializeException(it) }
+        )
+        val jsonString = json.encodeToString(logEntry)
+        synchronized(System.out) {
+            System.out.println(jsonString)
         }
-        throw IllegalStateException("Unrecognized level [$level]")
     }
 
-    private val json = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
+    private fun serializeException(t: Throwable): String {
+        val sw = StringWriter()
+        t.printStackTrace(PrintWriter(sw))
+        return sw.toString()
     }
 }
+
+@Serializable
+data class LogEntry(
+    val timestamp: String,
+    val level: String,
+    val logger: String,
+    val thread: Long,
+    val message: String,
+    val exception: String? = null
+)

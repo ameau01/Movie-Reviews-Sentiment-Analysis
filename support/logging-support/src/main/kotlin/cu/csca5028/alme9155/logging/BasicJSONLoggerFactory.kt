@@ -1,19 +1,21 @@
 package cu.csca5028.alme9155.logging
 
+/**
+ * Factory for creating BasicJSONLogger instances.
+ */
+object BasicJSONLoggerFactory {
+    private val loggers = mutableMapOf<String, BasicJSONLogger>()
 
-import org.slf4j.ILoggerFactory
-import org.slf4j.Logger
-import java.util.concurrent.ConcurrentHashMap
-
-
-class BasicJSONLoggerFactory : ILoggerFactory {
-    companion object {
-        private var loggerMap = ConcurrentHashMap<String, Logger>();
+    @Synchronized
+    fun getLogger(name: String): BasicJSONLogger {
+        return loggers.getOrPut(name) { BasicJSONLogger(name) }
     }
 
-    override fun getLogger(name: String): Logger {
-        return loggerMap.computeIfAbsent(name) {
-            BasicJSONLogger(it)
-        }
+    /**
+     * Clear all loggers (for testing).
+     */
+    @Synchronized
+    fun clear() {
+        loggers.clear()
     }
 }
