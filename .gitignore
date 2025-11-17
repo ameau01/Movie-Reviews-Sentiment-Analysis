@@ -173,3 +173,10 @@ gradle-app.setting
 .DS_Store
 .vscode/
 logs/
+
+# Ignore fine-tuned model artifacts and large binaries
+distilbert-sst5-finetuned*/
+*.bin
+*.pt
+*.zip
+*.tar
