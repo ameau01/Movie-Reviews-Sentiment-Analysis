@@ -8,16 +8,25 @@ group = "cu.csca5028.alme9155.web"
 val ktorVersion: String by project
 
 dependencies {
-    implementation(project(":components:data-analyzer"))
     implementation(project(":support:logging-support"))
     implementation(project(":support:workflow-support"))
+    implementation(project(":components:sentiment"))
     implementation("org.slf4j:slf4j-nop:2.0.16")
 
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-freemarker-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-html-builder-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")    
+
+    implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
 
     testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
+    testImplementation(kotlin("test"))
 }
 
 application {

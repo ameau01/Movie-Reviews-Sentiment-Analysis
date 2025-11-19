@@ -1,6 +1,7 @@
 package cu.csca5028.alme9155.analyzer
 
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -61,19 +62,16 @@ fun Application.analyzerModule() {
             call.respondText("OK", ContentType.Text.Plain)
         }
         post("/analyze") {
-            logger.info("get /analyze called.")
-            logger.info("get /analyze before calling call.receive(...).")
-            val request = call.receive<AnalyzeRequest>()
-            logger.info("get /analyze after call.receive(...) called.")
-            val loggedText = request.text
+            val text = call.receiveParameters()["text"]?.trim()
+                ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing 'text' parameter")  
+
+            val loggedText = text
                 .replace('\n', ' ')
                 .take(200) // avoid huge log lines
             logger.info("POST /analyze called with text=$loggedText")
 
-            logger.info("get /analyze  before calling model.")
-
-            val response: AnalyzeResponse = model.predictSentiment(request.text)
-            //logger.info("POST /analyze called with text=$response")
+            val response: AnalyzeResponse = model.predictSentiment(text)
+            logger.info("POST /analyze called with text=$response")
             call.respond(response)
         }
     }
