@@ -8,15 +8,17 @@ services:
       args:
         APP_NAME: frontend-server
     container_name: sentiment-analyzer-frontend
-    ports: ["8881:8080"]
+    ports: ["80:8080"]
     environment: 
       PORT: 8080
-      FRONTEND_URL: http://movie-sentimental-analysis:8080
+      ANALYZER_URL: http://data-analyzer:8080
+      COLLECTOR_URL: http://data-collector:8080   
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 30s
 
   data-analyzer:
     build:
@@ -26,9 +28,13 @@ services:
     ports: ["8883:8080"]
     environment:  
       PORT: 8080
-      ANALYZER_URL: http://analyzer:8080
+      SELF_URL: http://data-analyzer:8080
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   data-collector:
     build:
@@ -38,6 +44,10 @@ services:
     ports: ["8882:8080"]
     environment: 
       PORT: 8080
-      ANALYZER_URL: http://data-collector:8080
+      ANALYZER_URL: http://data-analyzer:8080
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s      
