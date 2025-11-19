@@ -25,7 +25,7 @@ services:
       args:
         APP_NAME: data-analyzer-server
     container_name: sentiment-analyzer
-    ports: ["8883:8080"]
+    ports: ["8881:8080"]
     environment:  
       PORT: 8080
       SELF_URL: http://data-analyzer:8080
