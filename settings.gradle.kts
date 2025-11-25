@@ -9,6 +9,7 @@ include(
     "components:data-analyzer",
     "components:sentiment",
     "components:database",
+    "components:api",
 
     "support:logging-support",
     "support:workflow-support"

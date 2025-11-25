@@ -1,17 +1,21 @@
 package cu.csca5028.alme9155.collector
 
-import io.ktor.http.ContentType
-import io.ktor.server.application.Application
-import io.ktor.server.application.call
+import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.request.*
+
 import java.util.TimeZone
 import io.ktor.server.application.*
+
 import cu.csca5028.alme9155.logging.BasicJSONLoggerFactory  
 import cu.csca5028.alme9155.logging.LogLevel
+
+import cu.csca5028.alme9155.database.*
+import cu.csca5028.alme9155.api.*
 
 private val logger = BasicJSONLoggerFactory.getLogger("DataCollectorServer")
 
@@ -31,13 +35,9 @@ fun Application.collectorModule() {
                 
                 Usage:
                 - POST /collect
-                    * Content-Type: application/json
-                    * Body: { "URL": "URL to file download" }
                     
                 Example (curl):
                 curl -X POST http://localhost:$port/collect \
-                    -H "Content-Type: application/json" \
-                    -d '{"URL": "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"}' 
                     
                 Health check:
                 curl http://localhost:$port/health
@@ -48,6 +48,23 @@ fun Application.collectorModule() {
         }
         get("/health") {
             logger.info("get /health called.")
+            call.respondText("OK", ContentType.Text.Plain)
+        }
+        post("/collect") {
+            logger.info("post /collect called.")
+
+            var dbCount = 0
+            var apiCount = 0
+            try {
+                apiCount = ApiDataCollector.fetchDataFromAPI()
+                logger.info("Fetched $apiCount records from External API")
+
+                val reviews: List<RawMovieReview> = ApiDataCollector.getFetchedData()
+                dbCount = MongoDBAdapter.upsertMoviesReviews(reviews)
+            } catch (ex: Exception) {
+                logger.error("Exception found during data collection", ex)
+            }
+            logger.info("POST /collect fetched $dbCount records to NoSQL data store.")
             call.respondText("OK", ContentType.Text.Plain)
         }
     }

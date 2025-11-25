@@ -7,6 +7,9 @@ import com.mongodb.client.model.ReplaceOptions
 import org.bson.Document
 import org.litote.kmongo.KMongo
 
+import cu.csca5028.alme9155.logging.BasicJSONLoggerFactory  
+import cu.csca5028.alme9155.logging.LogLevel
+
 data class RawMovieReview(
     val movieId: String,
     val raw: Document
