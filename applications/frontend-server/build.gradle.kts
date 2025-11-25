@@ -13,7 +13,7 @@ dependencies {
     implementation(project(":components:sentiment"))
     implementation(project(":components:database"))
 
-    implementation("org.slf4j:slf4j-nop:2.0.16")
+    //implementation("org.slf4j:slf4j-nop:2.0.16")
 
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-freemarker-jvm:$ktorVersion")

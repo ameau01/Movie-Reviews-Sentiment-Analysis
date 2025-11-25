@@ -22,6 +22,8 @@ object APIDataConfig {
     const val RAPID_API_HOST = "film-show-ratings.p.rapidapi.com"
 }
 
+private val logger = BasicJSONLoggerFactory.getLogger("ApiDataCollector")
+
 object ApiDataCollector {
     private val client = HttpClient {
         install(ContentNegotiation) { json() }
@@ -41,7 +43,7 @@ object ApiDataCollector {
     private var lastFetchedMovies: List<RawMovieReview> = emptyList()
 
     suspend fun fetchDataFromAPI(): Int = withContext(Dispatchers.IO) {
-        println("Fetching API Data from: $apiUrl ...")
+        logger.info("Fetching API Data from: $apiUrl ...")
 
         val response: String = client.get(apiUrl) {
             headers {
@@ -50,12 +52,12 @@ object ApiDataCollector {
             }
         }.body()
 
-        println("----------------- Fetched API Data Preview -----------------")
+        logger.info("----------------- Fetched API Data Preview -----------------")
         val preview = response.take(3000).let { 
             if (response.length > 3000) "$it..." else it 
         }
-        println("Response preview (first 3000 chars): $preview")
-        println("---------------------------------------------------------")
+        logger.info("Response preview (first 3000 chars): $preview")
+        logger.info("---------------------------------------------------------")
 
 
         val json = Json.parseToJsonElement(response)
@@ -76,7 +78,7 @@ object ApiDataCollector {
         }
 
         lastFetchedMovies = movies
-        println("... Successfully fetched ${movies.size} records from API end point.")
+        logger.info("... Successfully fetched ${movies.size} records from API end point.")
         movies.size
     }
 

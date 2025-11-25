@@ -24,6 +24,8 @@ object DBConfig {
     const val REVIEWS_SUMMARY_COLLECTION = "review_summary_data"
 }
 
+private val logger = BasicJSONLoggerFactory.getLogger("MongoDBAdapter")
+
 object MongoDBAdapter {
     private val uri: String = System.getenv("MONGODB_URI")?: DBConfig.MONGO_URI
     private val dbName: String = System.getenv("MONGODB_DB_NAME") ?: DBConfig.DB_NAME
@@ -46,11 +48,10 @@ object MongoDBAdapter {
     fun upsertMoviesReviews(reviews: List<RawMovieReview>): Int {
         if (reviews.isEmpty()) return 0
 
-        println("Upserting ${reviews.size} documents into '$collectionName' collection ...")
+        logger.info("Upserting ${reviews.size} documents into '$collectionName' collection ...")
         val options = ReplaceOptions().upsert(true)
         var count = 0
 
-        println("Debug: before for loop")
         for (movie in reviews) {
             val doc = Document(movie.raw.toMutableMap()).apply {
                 put("movie_id", movie.movieId)
@@ -61,7 +62,7 @@ object MongoDBAdapter {
             count++
         }
 
-        println("... Successfully upserted $count documents to database.")
+        logger.info("... Successfully upserted $count documents to database.")
         return count
     }
 

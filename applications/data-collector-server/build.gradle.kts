@@ -21,7 +21,7 @@ dependencies {
     implementation(project(":components:api"))
 
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:3.3.2")
-    implementation("org.slf4j:slf4j-nop:2.0.16")
+    //implementation("org.slf4j:slf4j-nop:2.0.16")
 }
 application {
     mainClass.set("cu.csca5028.alme9155.collector.AppKt")

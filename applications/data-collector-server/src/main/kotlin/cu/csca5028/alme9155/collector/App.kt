@@ -8,6 +8,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.request.*
 
+import io.ktor.server.routing.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import kotlinx.serialization.Serializable
+
 import java.util.TimeZone
 import io.ktor.server.application.*
 
@@ -18,6 +23,12 @@ import cu.csca5028.alme9155.database.*
 import cu.csca5028.alme9155.api.*
 
 private val logger = BasicJSONLoggerFactory.getLogger("DataCollectorServer")
+
+@Serializable
+data class CollectionResult(
+    val fetchedCount: Int,
+    val upsertedCount: Int
+)
 
 fun Application.collectorModule() {
     val port = environment.config.propertyOrNull("ktor.deployment.port")?.getString()?.toInt()
@@ -57,15 +68,17 @@ fun Application.collectorModule() {
             var apiCount = 0
             try {
                 apiCount = ApiDataCollector.fetchDataFromAPI()
-                logger.info("Fetched $apiCount records from External API")
+                logger.info("Fetched $apiCount records from External API.")
 
                 val reviews: List<RawMovieReview> = ApiDataCollector.getFetchedData()
                 dbCount = MongoDBAdapter.upsertMoviesReviews(reviews)
+                logger.info("Upserted $dbCount records to NoSQL database.")
             } catch (ex: Exception) {
                 logger.error("Exception found during data collection", ex)
             }
             logger.info("POST /collect fetched $dbCount records to NoSQL data store.")
-            call.respondText("OK", ContentType.Text.Plain)
+            call.respond(CollectionResult(fetchedCount = apiCount, upsertedCount = dbCount))
+            //call.respondText("{}", ContentType.Text.Plain)
         }
     }
 }
