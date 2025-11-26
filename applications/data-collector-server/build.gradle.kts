@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":components:data-analyzer"))
     implementation(project(":components:database"))
     implementation(project(":components:api"))
+    implementation(project(":components:messaging"))
 
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:3.3.2")
     //implementation("org.slf4j:slf4j-nop:2.0.16")

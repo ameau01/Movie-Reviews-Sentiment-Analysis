@@ -18,9 +18,9 @@ import io.ktor.server.application.*
 
 import cu.csca5028.alme9155.logging.BasicJSONLoggerFactory  
 import cu.csca5028.alme9155.logging.LogLevel
-
 import cu.csca5028.alme9155.database.*
 import cu.csca5028.alme9155.api.*
+import cu.csca5028.alme9155.messaging.*
 
 private val logger = BasicJSONLoggerFactory.getLogger("DataCollectorServer")
 
@@ -93,14 +93,22 @@ fun Application.collectorModule() {
 
             var dbCount = 0
             var msgCount = 0
-            try {
-                logger.info("Database has $dbCount records to be published.")
-                // need to call ddb from mongo
+            val stats: PublishStats = try {
+                ReviewsDataHandler.publishAllRawReviews()
             } catch (ex: Exception) {
-                logger.error("Exception found during publishing data to message queue.", ex)
+                logger.error("Exception while publishing jobs to RabbitMQ", ex)
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    "Error during /publish: ${ex.message}"
+                )
+                return@post
             }
-            logger.info("POST /publish added $dbCount records to message queue.")
-            call.respond(PublishResult(dbCount = dbCount, msgCount = msgCount))
+            logger.info("POST /publish completed: totalRawReviews=${stats.totalRawReviews}, published=${stats.publishedCount}")
+            call.respond(PublishResult(
+                    dbCount = stats.totalRawReviews,
+                    msgCount = stats.publishedCount
+                )
+            )
         }
     }
 }

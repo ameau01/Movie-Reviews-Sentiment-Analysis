@@ -10,6 +10,7 @@ include(
     "components:sentiment",
     "components:database",
     "components:api",
+    ":components:messaging",
 
     "support:logging-support",
     "support:workflow-support"

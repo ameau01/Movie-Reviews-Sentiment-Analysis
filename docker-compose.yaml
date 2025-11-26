@@ -13,6 +13,8 @@ services:
       PORT: 8080
       ANALYZER_URL: http://data-analyzer:8080
       COLLECTOR_URL: http://data-collector:8080   
+    depends_on:
+      - mongodb      
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
       interval: 30s
@@ -29,6 +31,9 @@ services:
     environment:  
       PORT: 8080
       SELF_URL: http://data-analyzer:8080
+    depends_on:
+      - rabbitmq
+      - mongodb
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
@@ -45,6 +50,9 @@ services:
     environment: 
       PORT: 8080
       ANALYZER_URL: http://data-analyzer:8080
+    depends_on:
+      - rabbitmq
+      - mongodb      
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s

@@ -3,18 +3,16 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-group = "cu.csca5028.alme9155.database"
+group = "cu.csca5028.alme9155.messaging"
 version = "1.0.0"
 
 dependencies {
     implementation(project(":support:logging-support"))
+    implementation(project(":components:database"))
     implementation(project(":components:sentiment"))
 
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:3.3.2")
-    implementation("org.litote.kmongo:kmongo:5.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    implementation("org.slf4j:slf4j-api:2.0.16")
-    implementation("ch.qos.logback:logback-classic:1.4.14")    
+    implementation("com.rabbitmq:amqp-client:5.21.0")
 }
 kotlin {
     jvmToolchain(21)

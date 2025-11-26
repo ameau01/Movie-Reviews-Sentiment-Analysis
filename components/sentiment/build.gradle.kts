@@ -6,6 +6,8 @@ plugins {
     kotlin("plugin.serialization")
 }
 group = "cu.csca5028.alme9155.sentiment"
+version = "1.0.0"
+
 repositories {
     mavenCentral()
 }
