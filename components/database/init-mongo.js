@@ -9,5 +9,6 @@ db.api_data.createIndex({ "title": 1 });
 
 // Collection: REVIEW_DATA 
 db.reviews_data.createIndex({ "title": 1 }); 
+db.reviews_data.createIndex({ "labelText": 1 }); 
 
 print("Custom init complete. Ready for data collection.");

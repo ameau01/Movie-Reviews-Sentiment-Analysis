@@ -10,9 +10,12 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.util.TimeZone
 import io.ktor.server.application.*
+
 import cu.csca5028.alme9155.logging.BasicJSONLoggerFactory  
 import cu.csca5028.alme9155.logging.LogLevel
 import cu.csca5028.alme9155.sentiment.*
+import cu.csca5028.alme9155.database.MongoDBAdapter 
+
 import io.ktor.server.routing.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
@@ -85,6 +88,15 @@ fun Application.analyzerModule() {
             //val response: AnalyzeResponse = model.predictSentiment(title,text)
             val response = FineTunedSentimentModel.instance.predictSentiment(title, text)
             logger.info("POST /analyze called with text=$response")
+
+            try {
+                MongoDBAdapter.upsertAnalyzeResult(
+                    source = "UI",
+                    response = response
+                )
+            } catch (ex: Exception) {
+                logger.error("Failed to persist analyze result for UI /analyze call", ex)
+            }
             call.respond(response)
         }
     }
