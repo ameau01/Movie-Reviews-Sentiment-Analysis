@@ -40,12 +40,15 @@ fun Application.analyzerModule() {
                 Usage:
                 - POST /analyze
                     * Content-Type: application/json
-                    * Body: { "text": "your movie review here" }
+                    * Body: { 
+                        "title": "your movie title here" 
+                        "text": "your movie review here" 
+                    }
                     
                 Example (curl):
                 curl -X POST http://localhost:$port/analyze \
                     -H "Content-Type: application/json" \
-                    -d '{"text": "I loved this movie!"}' 
+                    -d '{"title":"God Father","text":"Amazing acting and plot!"}' 
                     
                 Health check:
                 curl http://localhost:$port/health
@@ -59,17 +62,28 @@ fun Application.analyzerModule() {
             call.respondText("OK", ContentType.Text.Plain)
         }
         post("/analyze") {
-            val text = call.receiveParameters()["text"]?.trim()
-                ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing 'text' parameter")  
+            val req = call.receive<AnalyzeRequest>()
+            val title = req.title.trim()
+            val text  = req.text.trim()
 
-            val loggedText = text
+            if (title.isBlank()) {
+                call.respond(HttpStatusCode.BadRequest, "Title is required and cannot be empty")
+                return@post
+            }
+            if (text.isBlank()) {
+                call.respond(HttpStatusCode.BadRequest, "Text is required and cannot be empty")
+                return@post
+            }
+
+
+            val loggedText = req.text
                 .replace('\n', ' ')
                 .take(200) // avoid huge log lines
-            logger.info("POST /analyze called with text=$loggedText")
+            logger.info("POST /analyze called with title=$title, text=$loggedText")
 
             //val model = CustomSentimentModel()
-            //val response: AnalyzeResponse = model.predictSentiment(text)
-            val response = FineTunedSentimentModel.instance.predictSentiment(text)
+            //val response: AnalyzeResponse = model.predictSentiment(title,text)
+            val response = FineTunedSentimentModel.instance.predictSentiment(title, text)
             logger.info("POST /analyze called with text=$response")
             call.respond(response)
         }

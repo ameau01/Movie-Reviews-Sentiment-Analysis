@@ -50,15 +50,22 @@ fun Application.frontendModule() {
             logger.info("POST /analyze called.")
             logger.info("Forwarding request to BERT NLP engine using URL = $analyzerUrl.")
 
-            val text = call.receiveParameters()["text"]?.trim()
+            val params = call.receiveParameters()
+            val text = params["text"]?.trim()
                 ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing 'text' parameter")
-            logger.info("POST /analyze called, parameter text='$text.'")
+            val title = params["title"]?.trim()
+                ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing 'title' parameter")
 
             try {
-                logger.info("Analyze URL: $analyzerUrl, Review text: $text")
+                logger.info("Analyze URL: $analyzerUrl, parameter title=\"$title\", text=\"$text.\"")
                 val response: HttpResponse = httpClient.post("$analyzerUrl/analyze") {
-                    contentType(ContentType.Application.FormUrlEncoded)
-                    setBody("text=$text")
+                    contentType(ContentType.Application.Json)
+                    setBody(Json.encodeToJsonElement(
+                        mapOf(
+                            "title" to title,
+                            "text" to text
+                        )).toString()
+                    )
                 }
                 val jsonObj = Json.parseToJsonElement(response.bodyAsText()).jsonObject
                 val labelText = jsonObj["labelText"]!!.jsonPrimitive.content
@@ -75,7 +82,9 @@ fun Application.frontendModule() {
                 call.respond(FreeMarkerContent(
                     "results.ftl", 
                     mapOf(
+                        "title" to title,
                         "text" to text,
+                        "labelText" to labelText,
                         "probabilities" to probabilities
                     )
                 ))

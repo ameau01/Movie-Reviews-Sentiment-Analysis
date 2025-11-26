@@ -23,12 +23,19 @@ import java.nio.file.Paths
 // Data class for NLP Sentiment Analysis
 @Serializable
 data class AnalyzeRequest(
+    val title: String,
     val text: String
-)
+) {
+    init {
+        require(title.isNotBlank()) { "Title is required and must not be blank." }
+        require(text.isNotBlank()) { "Text is required and must not be blank." }
+    }
+}
 
 // Stable response type used by all services
 @Serializable
 data class AnalyzeResponse(
+    val title: String,
     val text: String,
     val labelId: Int,
     val labelText: String,
@@ -57,7 +64,7 @@ class CustomSentimentModel(
     /**
      * Static model
      */
-    fun predictSentiment(text: String): AnalyzeResponse {
+    fun predictSentiment(title: String, text: String): AnalyzeResponse {
         val raw = labels.map { Random.nextDouble(0.01, 1.0) }
         val sum = raw.sum()
 
@@ -70,6 +77,7 @@ class CustomSentimentModel(
         }
 
         return AnalyzeResponse(
+            title = title,
             text = text,
             labelId = maxIndex,
             labelText = labels[maxIndex],
@@ -115,7 +123,7 @@ class FineTunedSentimentModel private constructor() {
         }
     }
 
-    fun predictSentiment(text: String): AnalyzeResponse {
+    fun predictSentiment(title: String, text: String): AnalyzeResponse {
         logger.info("predictSentiment() called.")
         val p = predictor
         if (p == null) {
@@ -123,7 +131,7 @@ class FineTunedSentimentModel private constructor() {
             //    "Fine-tuned model unavailable, using CustomSentimentModel fallback.",
             //    initError
             //)
-            return CustomSentimentModel().predictSentiment(text)
+            return CustomSentimentModel().predictSentiment(title, text)
         } else {
             return try {
                 val result = p!!.predict(text)
@@ -139,6 +147,7 @@ class FineTunedSentimentModel private constructor() {
                 val bestLabel = SENTIMENT_LABELS[bestId.coerceIn(0, 4)]
 
                 AnalyzeResponse(
+                    title = title,
                     text = text,
                     labelId = bestId,
                     labelText = bestLabel,
@@ -146,7 +155,7 @@ class FineTunedSentimentModel private constructor() {
                 )
             } catch (ex: Exception) {
                 //logger.error("prediction failure", ex)
-                CustomSentimentModel().predictSentiment(text)
+                CustomSentimentModel().predictSentiment(title, text)
             }
         }
     }

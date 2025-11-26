@@ -20,8 +20,8 @@ object DBConfig {
     const val MONGO_URI = "mongodb://root:password@mongodb:27017/sentiment_db?authSource=admin"
     const val DB_NAME = "sentiment_db"
     const val API_DATA_COLLECTION = "api_data"
-    const val REVIEWS_COLLECTION = "review_data"
-    const val REVIEWS_SUMMARY_COLLECTION = "review_summary_data"
+    const val REVIEWS_COLLECTION = "reviews_data"
+    const val REVIEWS_SUMMARY_COLLECTION = "reviews_summary_data"
 }
 
 private val logger = BasicJSONLoggerFactory.getLogger("MongoDBAdapter")

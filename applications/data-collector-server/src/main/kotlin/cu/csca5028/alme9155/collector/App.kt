@@ -30,6 +30,12 @@ data class CollectionResult(
     val upsertedCount: Int
 )
 
+@Serializable
+data class PublishResult(
+    val dbCount: Int,
+    val msgCount: Int
+)
+
 fun Application.collectorModule() {
     val port = environment.config.propertyOrNull("ktor.deployment.port")?.getString()?.toInt()
         ?: System.getenv("PORT")?.toInt()
@@ -81,7 +87,20 @@ fun Application.collectorModule() {
             }
             logger.info("POST /collect fetched $dbCount records to NoSQL data store.")
             call.respond(CollectionResult(fetchedCount = apiCount, upsertedCount = dbCount))
-            //call.respondText("{}", ContentType.Text.Plain)
+        }
+        post("/publish") {
+            logger.info("post /publish called.")
+
+            var dbCount = 0
+            var msgCount = 0
+            try {
+                logger.info("Database has $dbCount records to be published.")
+                // need to call ddb from mongo
+            } catch (ex: Exception) {
+                logger.error("Exception found during publishing data to message queue.", ex)
+            }
+            logger.info("POST /publish added $dbCount records to message queue.")
+            call.respond(PublishResult(dbCount = dbCount, msgCount = msgCount))
         }
     }
 }

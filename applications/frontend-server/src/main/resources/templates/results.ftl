@@ -5,6 +5,9 @@
     <h2>Analysis Result</h2>
 
     <div class="review-box">
+        <h3>Movie Title:</h3>
+        <p class="review-text">${title}</p>
+        
         <h3>Your Review Text:</h3>
         <p class="review-text">"${text}"</p>
     </div>
