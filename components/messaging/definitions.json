@@ -1,0 +1,49 @@
+{
+  "rabbitmq_version": "3.13",
+  "users": [
+    {
+      "name": "root",
+      "password": "password",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    { "name": "/" }
+  ],
+  "permissions": [
+    { "user": "root", "vhost": "/", "configure": ".*", "write": ".*", "read": ".*" }
+  ],
+  "parameters": [],
+  "policies": [],
+  "queues": [
+    {
+      "name": "movie_reviews_queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "movie_reviews",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "movie_reviews",
+      "vhost": "/",
+      "destination": "movie_reviews_queue",
+      "destination_type": "queue",
+      "routing_key": "reviews",
+      "arguments": {}
+    }
+  ]
+}
+

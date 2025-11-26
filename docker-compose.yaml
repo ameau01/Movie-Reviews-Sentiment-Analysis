@@ -72,10 +72,13 @@ services:
     restart: unless-stopped
     ports:
       - "5672:5672"    # AMQP port
-      - "15672:15672"  # Management UI → http://localhost:15672 
+      - "15672:15672"  # Management UI
     environment:
       RABBITMQ_DEFAULT_USER: root
       RABBITMQ_DEFAULT_PASS: password
+    volumes:
+        - ./components/messaging/definitions.json:/etc/rabbitmq/definitions.json:ro
+        - ./components/messaging/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
