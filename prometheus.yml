@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'frontend-server'
+    static_configs:
+      - targets: ['frontend-server:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'data-analyzer'
+    static_configs:
+      - targets: ['data-analyzer:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'data-collector'
+    static_configs:
+      - targets: ['data-collector:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
