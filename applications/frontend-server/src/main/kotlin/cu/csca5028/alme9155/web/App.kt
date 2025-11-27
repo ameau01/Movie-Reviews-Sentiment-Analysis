@@ -33,6 +33,7 @@ private val httpClient = HttpClient(CIO)
 private val SENTIMENT_LABELS = listOf(
     "very negative", "negative", "neutral", "positive", "very positive"
 )
+private val appStartTimeMillis: Long = System.currentTimeMillis()
 private fun ApplicationCall.headersMap(): Map<String, String> =
     request.headers.entries().associate { (key, value) -> key to value.joinToString() 
 }
@@ -135,6 +136,16 @@ fun Application.frontendModule() {
         get("/health") {
             logger.info("get /health called.")
             call.respondText("OK", ContentType.Text.Plain)
+        }
+        get("/metrics") {
+            val serviceName = "frontend-server"
+            val uptimeSeconds = (System.currentTimeMillis() - appStartTimeMillis) / 1000
+            val metrics = """
+                # HELP app_uptime_seconds Application uptime in seconds.
+                # TYPE app_uptime_seconds counter
+                app_uptime_seconds{service="$serviceName"} $uptimeSeconds
+            """.trimIndent()
+            call.respondText(metrics, ContentType.Text.Plain)
         }
     }
 }

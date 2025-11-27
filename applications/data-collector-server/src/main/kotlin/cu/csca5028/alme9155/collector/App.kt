@@ -23,6 +23,7 @@ import cu.csca5028.alme9155.api.*
 import cu.csca5028.alme9155.messaging.*
 
 private val logger = BasicJSONLoggerFactory.getLogger("DataCollectorServer")
+private val appStartTimeMillis: Long = System.currentTimeMillis()
 
 @Serializable
 data class CollectionResult(
@@ -110,6 +111,16 @@ fun Application.collectorModule() {
                     msgCount = stats.publishedCount
                 )
             )
+        }
+        get("/metrics") {
+            val serviceName = "data-collector-server"
+            val uptimeSeconds = (System.currentTimeMillis() - appStartTimeMillis) / 1000
+            val metrics = """
+                # HELP app_uptime_seconds Application uptime in seconds.
+                # TYPE app_uptime_seconds counter
+                app_uptime_seconds{service="$serviceName"} $uptimeSeconds
+            """.trimIndent()
+            call.respondText(metrics, ContentType.Text.Plain)
         }
     }
 }

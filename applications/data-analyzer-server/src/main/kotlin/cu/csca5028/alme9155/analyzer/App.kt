@@ -22,6 +22,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 
 private val logger = BasicJSONLoggerFactory.getLogger("DataAnalyzerServer")
+private val appStartTimeMillis: Long = System.currentTimeMillis()
 
 fun Application.analyzerModule() {
     val port = environment.config.propertyOrNull("ktor.deployment.port")?.getString()?.toInt()
@@ -102,6 +103,16 @@ fun Application.analyzerModule() {
                 logger.error("Failed to persist analyze result for UI /analyze call", ex)
             }
             call.respond(response)
+        }
+        get("/metrics") {
+            val serviceName = "data-analyzer-server"
+            val uptimeSeconds = (System.currentTimeMillis() - appStartTimeMillis) / 1000
+            val metrics = """
+                # HELP app_uptime_seconds Application uptime in seconds.
+                # TYPE app_uptime_seconds counter
+                app_uptime_seconds{service="$serviceName"} $uptimeSeconds
+            """.trimIndent()
+            call.respondText(metrics, ContentType.Text.Plain)
         }
     }
 }
