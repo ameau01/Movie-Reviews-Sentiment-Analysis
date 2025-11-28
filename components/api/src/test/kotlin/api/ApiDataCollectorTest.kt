@@ -1,5 +1,3 @@
-// components/api/src/test/kotlin/cu/csca5028/alme9155/api/ApiDataCollectorTest.kt
-
 package cu.csca5028.alme9155.api
 
 import cu.csca5028.alme9155.database.RawMovieReview

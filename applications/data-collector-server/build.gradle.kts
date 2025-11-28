@@ -15,8 +15,7 @@ application {
 dependencies {
     implementation(project(":support:workflow-support"))
     implementation(project(":support:logging-support"))
-    implementation(project(":components:sentiment"))    
-    implementation(project(":components:data-analyzer"))
+    implementation(project(":components:sentiment")) 
     implementation(project(":components:database"))
     implementation(project(":components:api"))
     implementation(project(":components:messaging"))

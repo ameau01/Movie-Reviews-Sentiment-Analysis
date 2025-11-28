@@ -1,3 +1,3 @@
-# Github action
+# Deploy Script.
 
-this is a copy of deployment action file in .github/workflows/deploy-to-vm.yml
+To run **deploy.sh**, execute ./deploy.sh

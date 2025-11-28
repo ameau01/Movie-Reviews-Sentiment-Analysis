@@ -5,8 +5,6 @@ include(
     "applications:data-analyzer-server",
     "applications:data-collector-server",
 
-    "components:data-collector",
-    "components:data-analyzer",
     "components:sentiment",
     "components:database",
     "components:api",
