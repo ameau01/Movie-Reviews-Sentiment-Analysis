@@ -25,23 +25,19 @@ class ApiDataCollectorTest {
 
         return array.mapNotNull { element ->
             val obj = element.jsonObject
-
-            // Fixed: Use ?.toString() and safe calls
             val title = obj["title"]?.toString()?.removeSurrounding("\"")
             val year = obj["year"]?.toString()?.removeSurrounding("\"")
             val id = obj["id"]?.toString()?.removeSurrounding("\"")
                 ?: obj["movie_id"]?.toString()?.removeSurrounding("\"")
-
             val movieId = id ?: listOfNotNull(title, year).joinToString("_")
                 .takeIf { it.isNotBlank() } ?: return@mapNotNull null
-
             val doc = Document.parse(obj.toString())
             RawMovieReview(movieId = movieId, raw = doc)
         }
     }
 
     @Test
-    fun `loads and parses real API response correctly`() {
+    fun testAPIResponse() {
         val movies = getFetchedDataFromApi()
 
         assertTrue(movies.isNotEmpty(), "Should load at least one movie")
