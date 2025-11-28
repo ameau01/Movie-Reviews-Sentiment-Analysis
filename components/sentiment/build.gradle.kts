@@ -27,6 +27,11 @@ dependencies {
 
     implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation(project(":support:logging-support"))
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.0")
+    testImplementation("io.mockk:mockk:1.13.14")
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
