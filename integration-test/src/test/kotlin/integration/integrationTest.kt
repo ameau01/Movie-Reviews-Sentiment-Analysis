@@ -13,18 +13,16 @@ private const val ANALYZER_URL: String = "http://localhost:8881"
 private const val COLLECTOR_URL: String = "http://localhost:8882"
 
 /**
- * End-to-end integration tests that assume the full stack is running:
+ * End-to-end integration tests that all service is running (docker compose up -d)
  */
 class WorkflowIntegrationTest {
-
-    // No ContentNegotiation / JSON needed: we only send form data and read HTML.
     private val client = HttpClient(CIO)
 
     /**
      * Integration Workflow:
      * UI Form -> POST /analyze (frontend) -> data-analyzer -> HTML result page.
      *
-     * Uses the same inputs you used manually:
+     * UI Form submit:
      *  - title: "god father 2"
      *  - text:  "fantastic"
      */
